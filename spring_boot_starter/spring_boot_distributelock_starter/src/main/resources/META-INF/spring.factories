@@ -1,0 +1,3 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+com.fermin.redis.configuration.RedissonAutoConfiguration,\
+com.fermin.redis.lock.configuration.RedissonLockAutoConfiguration
