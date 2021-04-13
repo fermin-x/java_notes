@@ -1,4 +1,4 @@
-package com.fermin.jvmtest;
+package com.fermin.classload;
 
 import java.net.URL;
 import java.net.URLClassLoader;

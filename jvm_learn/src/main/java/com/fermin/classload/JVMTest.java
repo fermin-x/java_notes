@@ -1,4 +1,4 @@
-package com.fermin.jvmtest;
+package com.fermin.classload;
 
 /**
  * Klass 类
@@ -14,7 +14,11 @@ package com.fermin.jvmtest;
  * 通过类的全名获取存储该类的class文件
  */
 public class JVMTest {
+
+    private static final int d = 20;
     private static final String H = "world";
+    private static int c;
+    private static int b = 20;
 
     static {
         System.out.println("hello world");
