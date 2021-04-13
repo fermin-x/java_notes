@@ -3,3 +3,36 @@ server:
 spring:
   application:
     name: oauth2
+  #数据库
+  datasource:
+    type: com.alibaba.druid.pool.DruidDataSource
+    druid:
+      validationQuery: select 1
+      testWhileIdle: true
+      testOnBorrow: true
+      testOnReturn: true
+      filter:
+        stat:
+          enabled: false
+      initial-size: 3
+      keep-alive: true
+      max-active: 10
+      max-wait: 12000
+      min-evictable-idle-time-millis: 300000
+      min-idle: 5
+      pool-prepared-statements: false
+      stat-view-servlet:
+        enabled: false
+      test-while-idle: true
+      time-between-eviction-runs-millis: 600000
+      web-stat-filter:
+        enabled: false
+    username: root
+    password: 123456
+    url: 'jdbc:mysql://localhost:3306/my_test?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true&failOverReadOnly=false&serverTimezone=Asia/Shanghai'
+
+#mybatis-plus:
+#  configuration:
+#    map-underscore-to-camel-case: true
+#  mapper-locations: classpath:/mapper/*Mapper.xml
+#  typeAliasesPackage: cn.tvjoy.edu.course.entity

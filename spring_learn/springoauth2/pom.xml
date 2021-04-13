@@ -13,6 +13,8 @@
     <packaging>pom</packaging>
     <modules>
         <module>oauth2</module>
+        <module>order</module>
+        <module>mall</module>
     </modules>
 
     <properties>
@@ -22,7 +24,10 @@
         <spring-cloud.version>Hoxton.SR8</spring-cloud.version>
         <spring-cloud-alibaba.version>2.2.3.RELEASE</spring-cloud-alibaba.version>
         <spring-boot-admin.version>2.2.4</spring-boot-admin.version>
-
+        <mybatis.plus.version>3.4.1</mybatis.plus.version>
+        <lombok.version>1.18.12</lombok.version>
+        <durid.version>1.2.3</durid.version>
+        <lombok.version>1.18.12</lombok.version>
     </properties>
 
     <dependencyManagement>
