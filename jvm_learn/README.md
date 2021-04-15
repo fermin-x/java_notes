@@ -92,8 +92,135 @@ java中的数组不是静态数据类型，是动态数据类型，是运行期�
 
 
 
+## 使用
+
+
+
+## 卸载
+
+
+
 # HSDB使用
 
 如何通过HSDB查看⼀个Java类对应的C++类（⾮数组类）
+`java -cp $JAVA_HOME/lib/sa-jdi.jar sun.jvm.hotspot.HSDB`
+
 * 1、通过类向导
 * 2、通过对象
+
+
+
+# 类加载器
+
+
+
+![image-20210415161655717](doc\image-20210415161655717.png)
+
+- 启动（Bootstrap）类加载器
+  启动类加载器主要加载的是JVM自身需要的类，这个类加载使用C++语言实现的，是虚拟机自身的一部分，它负责将 `<JAVA_HOME>/lib`路径下的核心类库或`-Xbootclasspath`参数指定的路径下的jar包加载到内存中
+
+- 扩展（Extension）类加载器
+  扩展类加载器是指Sun公司(已被Oracle收购)实现的sun.misc.Launcher$ExtClassLoader类，由Java语言实现的，是Launcher的静态内部类，它负责加载<JAVA_HOME>/lib/ext目录下或者由系统变量-Djava.ext.dir指定位路径中的类库
+
+- 系统（System）类加载器
+  也称应用程序加载器是指 Sun公司实现的sun.misc.Launcher$AppClassLoader。它负责加载系统类路径java -classpath或-D java.class.path 指定路径下的类库，也就是我们经常用到的classpath路径，开发者可以直接使用系统类加载器，一般情况下该类加载是程序中默认的类加载器，通过ClassLoader#getSystemClassLoader()方法可以获取到该类加载器
+
+  
+
+```
+启动类加载器，由C++实现，没有父类。
+
+拓展类加载器(ExtClassLoader)，由Java语言实现，父类加载器为null
+
+系统类加载器(AppClassLoader)，由Java语言实现，父类加载器为ExtClassLoader
+
+自定义类加载器，父类加载器肯定为AppClassLoader。
+```
+
+
+
+自定义类加载器的情况
+
+- 当class文件不在ClassPath路径下，默认系统类加载器无法找到该class文件，在这种情况下我们需要实现一个自定义的ClassLoader来加载特定路径下的class文件生成class对象。
+
+- 当一个class文件是通过网络传输并且可能会进行相应的加密操作时，需要先对class文件进行相应的解密后再加载到JVM内存中，这种情况下也需要编写自定义的ClassLoader并实现相应的逻辑。
+
+- 当需要实现热部署功能时(一个class文件通过不同的类加载器产生不同class对象从而实现热部署功能)，需要实现自定义ClassLoader的逻辑。
+
+
+
+## 双亲委派
+
+工作原理的是，如果一个类加载器收到了类加载请求，它并不会自己先去加载，而是把这个请求委托给父类的加载器去执行，如果父类加载器还存在其父类加载器，则进一步向上委托，依次递归，请求最终将到达顶层的启动类加载器，如果父类加载器可以完成类加载任务，就成功返回，倘若父类加载器无法完成此加载任务，子加载器才会尝试自己去加载（凭实力坑爹）,线程上下文类加载器
+
+- 优势
+
+  好处是Java类随着它的类加载器一起具备了一种带有优先级的层次关系，通过这种层级关可以避免类的重复加载，当父亲已经加载了该类时，就没有必要子ClassLoader再加载一次
+
+  其次是考虑到安全因素，java核心api中定义类型不会被随意替换
+
+- 缺点
+
+  子类加载器可以使用父类加载器已经加载的类，而父类加载器无法使用子类加载器已经加载的
+
+  SPI实现的Java类一般是由AppClassLoader来加载的。BootstrapClassLoader是无法找到 SPI 的实现类的，因为它只加载Java的核心库。它也不能代理给AppClassLoader，因为它是最顶层的类加载器。
+  
+  
+  
+  可以通过Thread.currentThread().getClassLoader()和Thread.currentThread().getContextClassLoader()获取线程上下文类加载器
+  
+  
+  
+  
+
+### SPI
+
+与SpringIOC集成:
+
+1. 仅仅使用Spring IOC功能。
+
+```java
+public class Mall {
+	
+	@Resource
+	private OrderService orderService;
+	
+	public void doSomething(){
+		System.out.println("握手");
+	}
+	public void getReward(){
+		orderService.get();
+	}
+}
+```
+
+只是SPI加载了这个类可以通过AutowireCapableBeanFactory 进行注册
+
+```java
+@Service
+public class OrderCreate{
+	
+	@Resource
+	private AutowireCapableBeanFactory beanFactory;
+	
+	public void test(){
+		Mall mall = new Mall();
+		beanFactory.autowireBean(mall);
+		mall.getReward();
+	}
+}
+```
+
+2. 动态的交给Spring管理
+
+可以参考
+
+```http
+https://github.com/SongranZhang/spi-imp
+```
+
+
+
+# 类加载器加载的类如何存储
+
+![image-20210415170730039](doc\image-20210415170730039.png)
