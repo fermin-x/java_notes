@@ -1,10 +1,12 @@
-package com.fermin.orderserver.config;
+package com.fermin.mallserver.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableResourceServer;
 import org.springframework.security.oauth2.config.annotation.web.configuration.ResourceServerConfigurerAdapter;
@@ -16,12 +18,13 @@ import org.springframework.security.web.access.expression.DefaultWebSecurityExpr
 
 @Configuration
 @EnableResourceServer
-public class ResourceServer extends ResourceServerConfigurerAdapter {
+// 这个注解必须加，开启Security
+@EnableWebSecurity
+// 启用Security注解，保证post之前的注解可以使用 例如最常用的@PreAuthorize
+@EnableGlobalMethodSecurity(securedEnabled = true, prePostEnabled = true, jsr250Enabled = true)
+public class MallResourceServerConfig extends ResourceServerConfigurerAdapter {
 
-    public static final String RESOURCE_ID = "order";
-
-//    @Autowired
-//    public TokenStore tokenStore;
+    public static final String RESOURCE_ID = "mall";
 
     // 引入的bean是为了解决no bean resolver registered的问题
     // https://github.com/spring-projects/spring-security-oauth/issues/730#issuecomment-219480394
@@ -71,11 +74,10 @@ public class ResourceServer extends ResourceServerConfigurerAdapter {
         http.csrf().disable();
 
         http.authorizeRequests().anyRequest().authenticated();
-        
+
 //        http.authorizeRequests().anyRequest().access("@authService.canAccess(request, authentication)");
 
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
     }
-
 
 }
