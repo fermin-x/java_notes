@@ -1,4 +1,4 @@
-package cn.fermin.dataStructuresAndAlgorithms;
+package com.fermin.dataStructuresAndAlgorithms;
 
 public class ReverString {
     public static void main(String[] args) {

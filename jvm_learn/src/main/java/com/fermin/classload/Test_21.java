@@ -2,7 +2,7 @@ package com.fermin.classload;
 
 /**
  * 准备阶段 val1 val2 赋初值 val1=0 val2=0
- * 初始化阶段 val1=0 val2=1
+ * 初始化阶段 val1=0 val2=1 ，init时 val1=1，val2=2
  */
 public class Test_21 {
     public static void main(String[] args) {

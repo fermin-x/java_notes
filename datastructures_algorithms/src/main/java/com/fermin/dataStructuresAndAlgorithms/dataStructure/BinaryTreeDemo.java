@@ -1,4 +1,4 @@
-package cn.fermin.dataStructuresAndAlgorithms.dataStructure;
+package com.fermin.dataStructuresAndAlgorithms.dataStructure;
 
 /**
  * 二叉树

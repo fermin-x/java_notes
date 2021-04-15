@@ -3,7 +3,8 @@ package com.fermin.classload;
 import java.util.UUID;
 
 /**
- * UUID.randomUUID().toString(); 不是常量
+ * final 修饰的uuid不是常量
+ * UUID.randomUUID().toString();
  */
 public class Test_7 {
     public static void main(String[] args) {

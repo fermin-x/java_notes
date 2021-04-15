@@ -1,4 +1,4 @@
-package cn.fermin.dataStructuresAndAlgorithms.sort;
+package com.fermin.dataStructuresAndAlgorithms.sort;
 
 import java.util.Arrays;
 

@@ -1,4 +1,4 @@
-package cn.fermin.dataStructuresAndAlgorithms;
+package com.fermin.dataStructuresAndAlgorithms;
 
 /**
  * 八皇后问题

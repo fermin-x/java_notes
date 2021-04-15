@@ -1,4 +1,4 @@
-package cn.fermin.dataStructuresAndAlgorithms.sort;
+package com.fermin.dataStructuresAndAlgorithms.sort;
 
 /**
  * Merge sort is a “divide and conquer” algorithm wherein we first divide the problem into subproblems.
