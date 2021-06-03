@@ -8,6 +8,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * 通过SPI机制对第三方服务的加载
+ *
  * @param <T>
  */
 public abstract class AbstractThirdService<T extends BaseThirdService> {

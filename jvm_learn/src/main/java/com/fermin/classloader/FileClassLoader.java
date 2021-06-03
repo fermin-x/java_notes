@@ -9,6 +9,22 @@ public class FileClassLoader extends ClassLoader {
         this.rootDir = rootDir;
     }
 
+    public static void main(String[] args) throws ClassNotFoundException {
+        String rootDir = "/Users/zejian/Downloads/Java8_Action/src/main/java/";
+        //创建自定义文件类加载器
+        FileClassLoader loader = new FileClassLoader(rootDir);
+
+        try {
+            //加载指定的class文件
+            Class<?> object1 = loader.loadClass("com.zejian.classloader.DemoObj");
+            System.out.println(object1.newInstance().toString());
+
+            //输出结果:I am DemoObj
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     /**
      * 编写findClass方法的逻辑
      *
@@ -62,21 +78,5 @@ public class FileClassLoader extends ClassLoader {
      */
     private String classNameToPath(String className) {
         return rootDir + File.separatorChar + className.replace('.', File.separatorChar) + ".class";
-    }
-
-    public static void main(String[] args) throws ClassNotFoundException {
-        String rootDir = "/Users/zejian/Downloads/Java8_Action/src/main/java/";
-        //创建自定义文件类加载器
-        FileClassLoader loader = new FileClassLoader(rootDir);
-
-        try {
-            //加载指定的class文件
-            Class<?> object1 = loader.loadClass("com.zejian.classloader.DemoObj");
-            System.out.println(object1.newInstance().toString());
-
-            //输出结果:I am DemoObj
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 }

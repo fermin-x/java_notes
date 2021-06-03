@@ -1,6 +1,6 @@
 package com.fermin.spi;
 
-public class MowShoutServiceImpl implements ShoutService{
+public class MowShoutServiceImpl implements ShoutService {
     @Override
     public void shout() {
         System.out.println("mow~");

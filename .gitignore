@@ -1,9 +1,3 @@
-spring_learn/springoauth2/gateway/HELP.md
-target/
-!.mvn/wrapper/maven-wrapper.jar
-!**/src/main/**/target/
-!**/src/test/**/target/
-
 ### STS ###
 .apt_generated
 .classpath
@@ -18,6 +12,11 @@ target/
 *.iws
 *.iml
 *.ipr
+**/target/
+**/**/target/
+
+### JRebel ###
+**/src/main/resources/rebel.xml
 
 ### NetBeans ###
 /nbproject/private/

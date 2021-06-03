@@ -20,8 +20,8 @@ public class SingleTonTutorial {
  * serialization and singleton
  * <p>
  * sometimes in distribute systems, we need to implement serializable interface in Singleton class.
- *
- *
+ * <p>
+ * <p>
  * to overcome this scenario all we need to do it provide the implementation of readResolve() method
  */
 
@@ -30,10 +30,6 @@ class SerializedSingleton implements Serializable {
     private static final long serialVersionUID = -7604766932017737115L;
 
     private SerializedSingleton() {
-    }
-
-    private static class SingletonHelper {
-        private static final SerializedSingleton instance = new SerializedSingleton();
     }
 
     public static SerializedSingleton getInstance() {
@@ -46,12 +42,15 @@ class SerializedSingleton implements Serializable {
         return SingletonHelper.instance;
     }
 
+    private static class SingletonHelper {
+        private static final SerializedSingleton instance = new SerializedSingleton();
+    }
+
 }
 
 /**
  * the problem with serialized class is that whenever we deserialize it,
  * it will create a new instance of the class.
- *
  */
 class SingletonSerializedTest {
 
@@ -95,15 +94,15 @@ class EagerInitializedSingleton {
 class StaticBlockSingle {
     private static StaticBlockSingle instance;
 
-    private StaticBlockSingle() {
-    }
-
     static {
         try {
             instance = new StaticBlockSingle();
         } catch (Exception exception) {
             throw new RuntimeException("Exception occured in creating singleton instance");
         }
+    }
+
+    private StaticBlockSingle() {
     }
 
     public static StaticBlockSingle getInstance() {
@@ -142,11 +141,11 @@ class BillPughSingleton {
     private BillPughSingleton() {
     }
 
-    private static class SingletonHelper {
-        private static final BillPughSingleton INSTANCE = new BillPughSingleton();
-    }
-
     public static BillPughSingleton getInstance() {
         return SingletonHelper.INSTANCE;
+    }
+
+    private static class SingletonHelper {
+        private static final BillPughSingleton INSTANCE = new BillPughSingleton();
     }
 }

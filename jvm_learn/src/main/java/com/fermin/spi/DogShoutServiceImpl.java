@@ -1,6 +1,6 @@
 package com.fermin.spi;
 
-public class DogShoutServiceImpl implements ShoutService{
+public class DogShoutServiceImpl implements ShoutService {
     @Override
     public void shout() {
         System.out.println("wang!");
