@@ -16,11 +16,15 @@
         <module>spring_boot_starter</module>
         <module>spring_boot_cloud</module>
         <module>spring</module>
+        <module>netty</module>
+        <module>video_capture</module>
     </modules>
 
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
     </properties>
+
+
 
 </project>
