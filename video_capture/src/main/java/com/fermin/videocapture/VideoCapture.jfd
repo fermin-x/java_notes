@@ -144,18 +144,22 @@ new FormModel {
 						"gridy": 5
 						"gridx": 4
 					} )
-					add( new FormComponent( "javax.swing.JFormattedTextField" ) {
-						name: "formattedTextField1"
-						"enabled": false
-						"editable": false
-						"text": "截取前请保存视频文件名为video英文名或者中文名"
-						"foreground": sfield java.awt.Color red
-						"font": new java.awt.Font( "Microsoft YaHei UI Light", 0, 13 )
+					add( new FormContainer( "javax.swing.JScrollPane", new FormLayoutManager( class javax.swing.JScrollPane ) ) {
+						name: "scrollPane1"
+						add( new FormComponent( "javax.swing.JTextArea" ) {
+							name: "textArea1"
+							"text": "支持视频格式:mp4 ts mov avi flv mkv rmvb"
+							"lineWrap": true
+							"enabled": false
+							"editable": false
+							"rows": 2
+							"font": new java.awt.Font( "Microsoft YaHei UI Light", 0, 13 )
+						} )
 					}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
 						"gridx": 1
 						"gridy": 7
 						"gridwidth": 4
-						"gridheight": 2
+						"gridheight": 3
 					} )
 				}, new FormLayoutConstraints( class java.lang.String ) {
 					"value": "Center"
@@ -192,8 +196,8 @@ new FormModel {
 				"value": "Center"
 			} )
 		}, new FormLayoutConstraints( null ) {
-			"location": new java.awt.Point( 95, 35 )
-			"size": new java.awt.Dimension( 555, 365 )
+			"location": new java.awt.Point( 85, 35 )
+			"size": new java.awt.Dimension( 545, 365 )
 		} )
 	}
 }

@@ -116,7 +116,7 @@ public class VideoCapture extends JFrame {
                 }
             } else {
 
-                if (StringUtils.isEmpty(numberOfCaptures = spinner1.getValue().toString()) || !this.check(numberOfCaptures) || Integer.parseInt(numberOfCaptures) <=0 ) {
+                if (StringUtils.isEmpty(numberOfCaptures = spinner1.getValue().toString()) || !this.check(numberOfCaptures) || Integer.parseInt(numberOfCaptures) <= 0) {
                     JOptionPane.showMessageDialog(null, "please enter the correct number of captures!");
                     return;
                 }
@@ -139,6 +139,8 @@ public class VideoCapture extends JFrame {
         } finally {
             isExecute = false;
         }
+
+        JOptionPane.showMessageDialog(null, "TASK FINISHED!");
     }
 
     /**
@@ -210,7 +212,8 @@ public class VideoCapture extends JFrame {
         textField4 = new JTextField();
         textField5 = new JTextField();
         radioButton2 = new JRadioButton();
-        formattedTextField1 = new JFormattedTextField();
+        scrollPane1 = new JScrollPane();
+        textArea1 = new JTextArea();
         buttonBar = new JPanel();
         okButton = new JButton();
         cancelButton = new JButton();
@@ -226,10 +229,7 @@ public class VideoCapture extends JFrame {
         //======== dialogPane ========
         {
             dialogPane.setBorder(new EmptyBorder(12, 12, 12, 12));
-            dialogPane.setBorder(new javax.swing.border.CompoundBorder(new javax.swing.border.TitledBorder(new javax.swing.border.EmptyBorder
-                    (0, 0, 0, 0), "", javax.swing.border.TitledBorder.CENTER, javax.swing.border
-                    .TitledBorder.BOTTOM, new java.awt.Font("D\u0069alog", java.awt.Font.BOLD, 12), java.awt
-                    .Color.red), dialogPane.getBorder()));
+            dialogPane.setBorder(new javax.swing.border.CompoundBorder(new javax.swing.border.TitledBorder(new javax.swing.border.EmptyBorder(0, 0, 0, 0), "", javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.BOTTOM, new java.awt.Font("D\u0069alog", java.awt.Font.BOLD, 12), java.awt.Color.red), dialogPane.getBorder()));
             dialogPane.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
                 @Override
                 public void propertyChange(java.beans.PropertyChangeEvent e) {
@@ -347,15 +347,20 @@ public class VideoCapture extends JFrame {
                         GridBagConstraints.CENTER, GridBagConstraints.BOTH,
                         new Insets(0, 0, 5, 5), 0, 0));
 
-                //---- formattedTextField1 ----
-                formattedTextField1.setEnabled(false);
-                formattedTextField1.setEditable(false);
-                formattedTextField1.setText("\u622a\u53d6\u524d\u8bf7\u4fdd\u5b58\u89c6\u9891\u6587\u4ef6\u540d\u4e3avideo\u82f1\u6587\u540d\u6216\u8005\u4e2d\u6587\u540d");
-                formattedTextField1.setForeground(Color.red);
-                formattedTextField1.setFont(new Font("Microsoft YaHei UI Light", Font.PLAIN, 13));
-                contentPanel.add(formattedTextField1, new GridBagConstraints(1, 7, 4, 2, 0.0, 0.0,
-                        GridBagConstraints.CENTER, GridBagConstraints.BOTH,
-                        new Insets(0, 0, 5, 5), 0, 0));
+                //======== scrollPane1 ========
+                {
+
+                    //---- textArea1 ----
+                    textArea1.setLineWrap(true);
+                    textArea1.append("\u622a\u53d6\u524d\u8bf7\u4fdd\u5b58\u89c6\u9891\u6587\u4ef6\u540d\u4e3avideo\u82f1\u6587\u540d\u6216\u8005\u4e2d\u6587\u540d \r\n");
+                    textArea1.append("\u652f\u6301\u89c6\u9891\u683c\u5f0f:mp4 ts mov avi flv mkv rmvb");
+                    textArea1.setEnabled(false);
+                    textArea1.setEditable(false);
+                    textArea1.setRows(2);
+                    textArea1.setFont(new Font("Microsoft YaHei UI Light", Font.PLAIN, 13));
+                    scrollPane1.setViewportView(textArea1);
+                }
+                contentPanel.add(scrollPane1, new GridBagConstraints(1, 7, 4, 3, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(0, 0, 0, 5), 0, 0));
             }
             dialogPane.add(contentPanel, BorderLayout.CENTER);
 
@@ -370,17 +375,13 @@ public class VideoCapture extends JFrame {
                 okButton.setText("\u751f\u6210");
                 okButton.setFont(new Font("Microsoft YaHei UI", Font.BOLD, 13));
                 okButton.addActionListener(e -> okButtonActionPerformed(e));
-                buttonBar.add(okButton, new GridBagConstraints(1, 0, 1, 1, 0.0, 0.0,
-                        GridBagConstraints.CENTER, GridBagConstraints.BOTH,
-                        new Insets(0, 0, 0, 5), 0, 0));
+                buttonBar.add(okButton, new GridBagConstraints(1, 0, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(0, 0, 0, 5), 0, 0));
 
                 //---- cancelButton ----
                 cancelButton.setText("\u53d6\u6d88");
                 cancelButton.setFont(new Font("Microsoft YaHei UI", Font.BOLD, 13));
                 cancelButton.addActionListener(e -> cancelButtonActionPerformed(e));
-                buttonBar.add(cancelButton, new GridBagConstraints(2, 0, 1, 1, 0.0, 0.0,
-                        GridBagConstraints.CENTER, GridBagConstraints.BOTH,
-                        new Insets(0, 0, 0, 0), 0, 0));
+                buttonBar.add(cancelButton, new GridBagConstraints(2, 0, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
             }
             dialogPane.add(buttonBar, BorderLayout.SOUTH);
         }
@@ -410,7 +411,8 @@ public class VideoCapture extends JFrame {
     private JTextField textField4;
     private JTextField textField5;
     private JRadioButton radioButton2;
-    private JFormattedTextField formattedTextField1;
+    private JScrollPane scrollPane1;
+    private JTextArea textArea1;
     private JPanel buttonBar;
     private JButton okButton;
     private JButton cancelButton;
