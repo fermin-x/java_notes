@@ -51,6 +51,7 @@ public class CaptureUtil {
         });
 
         countDownLatch.await();
+        System.out.println(">>>>>>>>>>>>>>task finished>>>>>>>>>>>>>>");
 
         return true;
     }
@@ -112,7 +113,7 @@ public class CaptureUtil {
         public Capture(CaptureRequest request, CountDownLatch countDownLatch) {
             try {
                 this.fFmpegFrameGrabber = FFmpegFrameGrabber.createDefault(new File(request.getFilePath()));
-
+                this.countDownLatch = countDownLatch;
                 this.captureRequest = request;
             } catch (FrameGrabber.Exception e) {
                 e.printStackTrace();
@@ -166,7 +167,7 @@ public class CaptureUtil {
 
                 } else {
                     // 此视频时长（s/秒）：
-                    long duration = fFmpegFrameGrabber.getLengthInTime() / (1000 * 1000);
+                    long duration = fFmpegFrameGrabber.getLengthInTime();
                     String time = captureRequest.getCaptureTime();
                     String[] timemarks = StringUtils.split(time, ":");
                     long timestamp = (Long.parseLong(timemarks[0]) * 3600 + Long.parseLong(timemarks[1]) * 60 + Long.parseLong(timemarks[2])) * 1000000l;
@@ -174,25 +175,25 @@ public class CaptureUtil {
                     System.out.println(">>>>>>>>>>>>>>" + captureRequest.getFilePath() + ">>>>>>>>>>>>>> capture time..." + Thread.currentThread().getName());
                     System.out.println(">>>>>>>>>>>>>>" + time + ">>>>>>>>>>>>>> timestamp>>>>>" + timestamp + ">>>>" + Thread.currentThread().getName());
 
+                    if (duration < timestamp) {
+                        System.out.println(">>>>>>>>>>>>>>" + captureRequest.getFilePath() + "截取视频时间超过视频时长(S)" + duration / (1000 * 1000l));
+                        return;
+                    }
                     fFmpegFrameGrabber.setTimestamp(timestamp);
                     frames.add(fFmpegFrameGrabber.grabImage().clone());
                 }
 
-
-                /*System.out.println(">>>>>>>>>>>>>>" + captureRequest.getFilePath() + ">>>>>>>>>>>>>> capture frames>>>>>" + Thread.currentThread().getName());
-                frames.stream().forEach(e -> System.out.println(e));*/
                 writeImage(frames);
 
             } catch (Exception e) {
                 e.printStackTrace();
             } finally {
+                this.countDownLatch.countDown();
                 try {
                     fFmpegFrameGrabber.stop();
                 } catch (FrameGrabber.Exception e) {
                     e.printStackTrace();
                 }
-
-                countDownLatch.countDown();
             }
         }
 
@@ -201,7 +202,8 @@ public class CaptureUtil {
             try {
                 Java2DFrameConverter converter = new Java2DFrameConverter();
 
-                for (Frame frame : frames) {
+                for (int i = 0; i < frames.size(); i++) {
+                    Frame frame = frames.get(i);
                     BufferedImage bufferedImage = converter.getBufferedImage(frame);
 
                     if (!captureRequest.isOriginalSize()) {
@@ -211,11 +213,16 @@ public class CaptureUtil {
                         bufferedImage = thumbnailImage;
                     }
 
-                    File file1 = new File(captureRequest.getSavePath() + File.separator + captureRequest.getFileName() + File.separator);
-                    if (!file1.exists()) {
-                        FileUtils.forceMkdir(file1);
+                    String savePath = captureRequest.getSavePath();
+                    if (captureRequest.isCreateFolderByName()) {
+                        File file1 = new File(savePath + File.separator + captureRequest.getFileName());
+                        if (!file1.exists()) {
+                            FileUtils.forceMkdir(file1);
+                        }
+                        savePath = file1.getAbsolutePath();
                     }
-                    File file = new File(captureRequest.getSavePath() + File.separator + captureRequest.getFileName() + File.separator + System.currentTimeMillis() + ".png");
+
+                    File file = new File(savePath + File.separator + captureRequest.getFileName() + "_" + i + ".png");
                     ImageIO.write(bufferedImage, "png", file);
 
                     System.out.println(">>>>>>>>>>>>>>" + file.getAbsolutePath() + ">>>>>>>>>>>>>> capture finished..." + Thread.currentThread().getName());

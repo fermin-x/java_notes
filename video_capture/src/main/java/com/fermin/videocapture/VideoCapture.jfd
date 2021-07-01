@@ -12,8 +12,8 @@ new FormModel {
 				name: "dialogPane"
 				"border": new javax.swing.border.EmptyBorder( 12, 12, 12, 12 )
 				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.GridBagLayout ) {
-					"$columnSpecs": "0, 0, 64, 64, 0, 91"
-					"$rowSpecs": "0, 0, 0, 0, 0, 0, 0"
+					"$columnSpecs": "0, 140, 87, 143, 0, 91, 0"
+					"$rowSpecs": "0, 0, 0, 0, 0, 0, 0, 0, 0, 0"
 					"$hGap": 5
 					"$vGap": 5
 					"$alignLeft": true
@@ -107,13 +107,13 @@ new FormModel {
 						"gridy": 3
 						"gridx": 4
 					} )
-					add( new FormComponent( "javax.swing.JButton" ) {
-						name: "button3"
-						"text": "打开目录"
-						"font": #Font0
+					add( new FormComponent( "javax.swing.JCheckBox" ) {
+						name: "checkBox1"
+						"text": "按视频名称创建文件夹"
+						"font": new java.awt.Font( "Microsoft YaHei UI", 0, 13 )
 					}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
-						"gridx": 5
-						"gridy": 3
+						"gridx": 2
+						"gridy": 4
 					} )
 					add( new FormComponent( "javax.swing.JLabel" ) {
 						name: "label5"
@@ -121,18 +121,18 @@ new FormModel {
 						"font": new java.awt.Font( "Microsoft YaHei UI", 0, 13 )
 					}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
 						"gridx": 1
-						"gridy": 4
+						"gridy": 5
 					} )
 					add( new FormComponent( "javax.swing.JTextField" ) {
 						name: "textField4"
 					}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
 						"gridx": 2
-						"gridy": 4
+						"gridy": 5
 					} )
 					add( new FormComponent( "javax.swing.JTextField" ) {
 						name: "textField5"
 					}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
-						"gridy": 4
+						"gridy": 5
 						"gridx": 3
 					} )
 					add( new FormComponent( "javax.swing.JRadioButton" ) {
@@ -141,8 +141,21 @@ new FormModel {
 						"font": #Font1
 						addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "radioButton2ActionPerformed", true ) )
 					}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
-						"gridy": 4
+						"gridy": 5
 						"gridx": 4
+					} )
+					add( new FormComponent( "javax.swing.JFormattedTextField" ) {
+						name: "formattedTextField1"
+						"enabled": false
+						"editable": false
+						"text": "截取前请保存视频文件名为video英文名或者中文名"
+						"foreground": sfield java.awt.Color red
+						"font": new java.awt.Font( "Microsoft YaHei UI Light", 0, 13 )
+					}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
+						"gridx": 1
+						"gridy": 7
+						"gridwidth": 4
+						"gridheight": 2
 					} )
 				}, new FormLayoutConstraints( class java.lang.String ) {
 					"value": "Center"
@@ -179,8 +192,8 @@ new FormModel {
 				"value": "Center"
 			} )
 		}, new FormLayoutConstraints( null ) {
-			"location": new java.awt.Point( 95, 115 )
-			"size": new java.awt.Dimension( 480, 300 )
+			"location": new java.awt.Point( 95, 35 )
+			"size": new java.awt.Dimension( 555, 365 )
 		} )
 	}
 }

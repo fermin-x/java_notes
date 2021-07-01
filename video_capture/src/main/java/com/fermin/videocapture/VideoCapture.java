@@ -11,7 +11,6 @@ import org.apache.commons.lang3.StringUtils;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
-import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -117,7 +116,7 @@ public class VideoCapture extends JFrame {
                 }
             } else {
 
-                if (StringUtils.isEmpty(numberOfCaptures = spinner1.getValue().toString()) || !this.check(numberOfCaptures)) {
+                if (StringUtils.isEmpty(numberOfCaptures = spinner1.getValue().toString()) || !this.check(numberOfCaptures) || Integer.parseInt(numberOfCaptures) <=0 ) {
                     JOptionPane.showMessageDialog(null, "please enter the correct number of captures!");
                     return;
                 }
@@ -131,12 +130,12 @@ public class VideoCapture extends JFrame {
             request.setOriginalSize(useOriginalSize);
             request.setSavePath(outPutPath);
             request.setTimeRandom(isRandom);
+            request.setCreateFolderByName(checkBox1.isSelected());
 
             CaptureUtil.getCover(videoPath, request);
 
         } catch (Exception exception) {
             exception.printStackTrace();
-
         } finally {
             isExecute = false;
         }
@@ -155,6 +154,10 @@ public class VideoCapture extends JFrame {
     }
 
     private void cancelButtonActionPerformed(ActionEvent e) {
+        if (isExecute) {
+            JOptionPane.showMessageDialog(null, "please hold on!");
+            return;
+        }
         textField1.setText("");
         textField2.setText("");
         textField3.setText("");
@@ -202,11 +205,12 @@ public class VideoCapture extends JFrame {
         label4 = new JLabel();
         textField3 = new JTextField();
         button2 = new JButton();
-        button3 = new JButton();
+        checkBox1 = new JCheckBox();
         label5 = new JLabel();
         textField4 = new JTextField();
         textField5 = new JTextField();
         radioButton2 = new JRadioButton();
+        formattedTextField1 = new JFormattedTextField();
         buttonBar = new JPanel();
         okButton = new JButton();
         cancelButton = new JButton();
@@ -222,16 +226,14 @@ public class VideoCapture extends JFrame {
         //======== dialogPane ========
         {
             dialogPane.setBorder(new EmptyBorder(12, 12, 12, 12));
-            dialogPane.setBorder(new javax.swing.border.CompoundBorder(new javax.swing.border.TitledBorder(new
-                    javax.swing.border.EmptyBorder(0, 0, 0, 0), "", javax
-                    .swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.BOTTOM, new java
-                    .awt.Font("Dia\u006cog", java.awt.Font.BOLD, 12), java.awt
+            dialogPane.setBorder(new javax.swing.border.CompoundBorder(new javax.swing.border.TitledBorder(new javax.swing.border.EmptyBorder
+                    (0, 0, 0, 0), "", javax.swing.border.TitledBorder.CENTER, javax.swing.border
+                    .TitledBorder.BOTTOM, new java.awt.Font("D\u0069alog", java.awt.Font.BOLD, 12), java.awt
                     .Color.red), dialogPane.getBorder()));
-            dialogPane.addPropertyChangeListener(new java.beans.
-                    PropertyChangeListener() {
+            dialogPane.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
                 @Override
                 public void propertyChange(java.beans.PropertyChangeEvent e) {
-                    if ("bord\u0065r".equals(e.getPropertyName())) throw new RuntimeException();
+                    if ("\u0062order".equals(e.getPropertyName())) throw new RuntimeException();
                 }
             });
             dialogPane.setLayout(new BorderLayout());
@@ -239,10 +241,10 @@ public class VideoCapture extends JFrame {
             //======== contentPanel ========
             {
                 contentPanel.setLayout(new GridBagLayout());
-                ((GridBagLayout) contentPanel.getLayout()).columnWidths = new int[]{0, 0, 69, 69, 0, 91, 0};
-                ((GridBagLayout) contentPanel.getLayout()).rowHeights = new int[]{0, 0, 0, 0, 0, 0, 0, 0};
-                ((GridBagLayout) contentPanel.getLayout()).columnWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0E-4};
-                ((GridBagLayout) contentPanel.getLayout()).rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0E-4};
+                ((GridBagLayout) contentPanel.getLayout()).columnWidths = new int[]{0, 145, 92, 148, 0, 96, 0, 0};
+                ((GridBagLayout) contentPanel.getLayout()).rowHeights = new int[]{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+                ((GridBagLayout) contentPanel.getLayout()).columnWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0E-4};
+                ((GridBagLayout) contentPanel.getLayout()).rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0E-4};
 
                 //---- label1 ----
                 label1.setText("\u6587\u4ef6\u9009\u62e9");
@@ -317,23 +319,23 @@ public class VideoCapture extends JFrame {
                         GridBagConstraints.CENTER, GridBagConstraints.BOTH,
                         new Insets(0, 0, 5, 5), 0, 0));
 
-                //---- button3 ----
-                button3.setText("\u6253\u5f00\u76ee\u5f55");
-                button3.setFont(new Font("Microsoft YaHei UI", Font.PLAIN, 13));
-                contentPanel.add(button3, new GridBagConstraints(5, 3, 1, 1, 0.0, 0.0,
+                //---- checkBox1 ----
+                checkBox1.setText("\u6309\u89c6\u9891\u540d\u79f0\u521b\u5efa\u6587\u4ef6\u5939");
+                checkBox1.setFont(new Font("Microsoft YaHei UI", Font.PLAIN, 13));
+                contentPanel.add(checkBox1, new GridBagConstraints(2, 4, 1, 1, 0.0, 0.0,
                         GridBagConstraints.CENTER, GridBagConstraints.BOTH,
-                        new Insets(0, 0, 5, 0), 0, 0));
+                        new Insets(0, 0, 5, 5), 0, 0));
 
                 //---- label5 ----
                 label5.setText("\u622a\u53d6\u5927\u5c0f");
                 label5.setFont(new Font("Microsoft YaHei UI", Font.PLAIN, 13));
-                contentPanel.add(label5, new GridBagConstraints(1, 4, 1, 1, 0.0, 0.0,
+                contentPanel.add(label5, new GridBagConstraints(1, 5, 1, 1, 0.0, 0.0,
                         GridBagConstraints.CENTER, GridBagConstraints.BOTH,
                         new Insets(0, 0, 5, 5), 0, 0));
-                contentPanel.add(textField4, new GridBagConstraints(2, 4, 1, 1, 0.0, 0.0,
+                contentPanel.add(textField4, new GridBagConstraints(2, 5, 1, 1, 0.0, 0.0,
                         GridBagConstraints.CENTER, GridBagConstraints.BOTH,
                         new Insets(0, 0, 5, 5), 0, 0));
-                contentPanel.add(textField5, new GridBagConstraints(3, 4, 1, 1, 0.0, 0.0,
+                contentPanel.add(textField5, new GridBagConstraints(3, 5, 1, 1, 0.0, 0.0,
                         GridBagConstraints.CENTER, GridBagConstraints.BOTH,
                         new Insets(0, 0, 5, 5), 0, 0));
 
@@ -341,7 +343,17 @@ public class VideoCapture extends JFrame {
                 radioButton2.setText("\u539f\u59cb\u89c6\u9891\u5927\u5c0f");
                 radioButton2.setFont(new Font("Microsoft YaHei UI", Font.PLAIN, 13));
                 radioButton2.addActionListener(e -> radioButton2ActionPerformed(e));
-                contentPanel.add(radioButton2, new GridBagConstraints(4, 4, 1, 1, 0.0, 0.0,
+                contentPanel.add(radioButton2, new GridBagConstraints(4, 5, 1, 1, 0.0, 0.0,
+                        GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+                        new Insets(0, 0, 5, 5), 0, 0));
+
+                //---- formattedTextField1 ----
+                formattedTextField1.setEnabled(false);
+                formattedTextField1.setEditable(false);
+                formattedTextField1.setText("\u622a\u53d6\u524d\u8bf7\u4fdd\u5b58\u89c6\u9891\u6587\u4ef6\u540d\u4e3avideo\u82f1\u6587\u540d\u6216\u8005\u4e2d\u6587\u540d");
+                formattedTextField1.setForeground(Color.red);
+                formattedTextField1.setFont(new Font("Microsoft YaHei UI Light", Font.PLAIN, 13));
+                contentPanel.add(formattedTextField1, new GridBagConstraints(1, 7, 4, 2, 0.0, 0.0,
                         GridBagConstraints.CENTER, GridBagConstraints.BOTH,
                         new Insets(0, 0, 5, 5), 0, 0));
             }
@@ -393,11 +405,12 @@ public class VideoCapture extends JFrame {
     private JLabel label4;
     private JTextField textField3;
     private JButton button2;
-    private JButton button3;
+    private JCheckBox checkBox1;
     private JLabel label5;
     private JTextField textField4;
     private JTextField textField5;
     private JRadioButton radioButton2;
+    private JFormattedTextField formattedTextField1;
     private JPanel buttonBar;
     private JButton okButton;
     private JButton cancelButton;

@@ -1,14 +1,6 @@
 package com.fermin.videocapture.bo;
 
 public class CaptureRequest {
-    public String getFileName() {
-        return fileName;
-    }
-
-    public void setFileName(String fileName) {
-        this.fileName = fileName;
-    }
-
     //    String filePath;
     String fileName;
     String filePath;
@@ -19,6 +11,23 @@ public class CaptureRequest {
     String width;
     String height;
     boolean originalSize = true;
+    boolean createFolderByName;
+
+    public boolean isCreateFolderByName() {
+        return createFolderByName;
+    }
+
+    public void setCreateFolderByName(boolean createFolderByName) {
+        this.createFolderByName = createFolderByName;
+    }
+
+    public String getFileName() {
+        return fileName;
+    }
+
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
+    }
 
     public String getFilePath() {
         return filePath;
