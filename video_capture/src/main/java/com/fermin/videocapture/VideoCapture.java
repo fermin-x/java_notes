@@ -76,7 +76,7 @@ public class VideoCapture extends JFrame {
      */
     private void okButtonActionPerformed(ActionEvent e) {
         if (isExecute) {
-            JOptionPane.showMessageDialog(null, "please hold on！╮(╯▽╰)╭");
+            JOptionPane.showMessageDialog(null, "please hold on!");
             return;
         }
 
@@ -84,13 +84,13 @@ public class VideoCapture extends JFrame {
             isExecute = true;
             String videoPath;
             if (StringUtils.isEmpty(videoPath = textField1.getText()) || !FileUtils.getFile(videoPath).exists()) {
-                JOptionPane.showMessageDialog(null, "please check the selected video file or path！╮(╯▽╰)╭");
+                JOptionPane.showMessageDialog(null, "please check the selected video file or path!");
                 return;
             }
 
             String outPutPath = null;
             if (StringUtils.isEmpty(outPutPath = textField3.getText()) || !FileUtils.getFile(outPutPath).isDirectory()) {
-                JOptionPane.showMessageDialog(null, "please chek the output folder！╮(╯▽╰)╭");
+                JOptionPane.showMessageDialog(null, "please chek the output folder!");
                 return;
             }
 
@@ -99,7 +99,7 @@ public class VideoCapture extends JFrame {
             if (!(useOriginalSize = radioButton2.isSelected())) {
                 if (StringUtils.isEmpty(width = textField4.getText()) || !this.check(width) ||
                         StringUtils.isEmpty(height = textField5.getText()) || !this.check(height)) {
-                    JOptionPane.showMessageDialog(null, "please input the correct width or height！╮(╯▽╰)╭");
+                    JOptionPane.showMessageDialog(null, "please input the correct width or height!");
                     return;
                 }
 
@@ -112,13 +112,13 @@ public class VideoCapture extends JFrame {
                 timeStr = textField2.getText();
                 Pattern pattern = Pattern.compile("^[0-2]?[0-4]\\d*:[0-5]?[0-9]:[0-5]?[0-9]$");
                 if (!pattern.matcher(timeStr).matches()) {
-                    JOptionPane.showMessageDialog(null, "please the check capture time ,format is HH:mm:ss！╮(╯▽╰)╭");
+                    JOptionPane.showMessageDialog(null, "please the check capture time ,format is HH:mm:ss!");
                     return;
                 }
             } else {
 
                 if (StringUtils.isEmpty(numberOfCaptures = spinner1.getValue().toString()) || !this.check(numberOfCaptures)) {
-                    JOptionPane.showMessageDialog(null, "please enter the correct number of captures！╮(╯▽╰)╭");
+                    JOptionPane.showMessageDialog(null, "please enter the correct number of captures!");
                     return;
                 }
             }
@@ -130,6 +130,7 @@ public class VideoCapture extends JFrame {
             request.setWidth(width);
             request.setOriginalSize(useOriginalSize);
             request.setSavePath(outPutPath);
+            request.setTimeRandom(isRandom);
 
             CaptureUtil.getCover(videoPath, request);
 
@@ -216,6 +217,7 @@ public class VideoCapture extends JFrame {
         setTitle("\u89c6\u9891\u622a\u56fe\u5de5\u5177");
         Container contentPane = getContentPane();
         contentPane.setLayout(new BorderLayout());
+        this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
         //======== dialogPane ========
         {

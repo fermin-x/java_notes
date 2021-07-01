@@ -2,6 +2,7 @@ package com.fermin.videocapture.util;
 
 import com.fermin.videocapture.bo.CaptureRequest;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.bytedeco.javacv.FFmpegFrameGrabber;
 import org.bytedeco.javacv.Frame;
 import org.bytedeco.javacv.FrameGrabber;
@@ -12,14 +13,19 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileFilter;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.*;
+import java.util.Locale;
+import java.util.Random;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class CaptureUtil {
 
-    public static final String[] VIDEO_FILE_EXTENSION = {"mp4", "ts", "mov"};
+    public static final String[] VIDEO_FILE_EXTENSION = {"mp4", "ts", "mov", "avi", "flv", "mkv", "rmvb"};
+
+    static ExecutorService threadPool = Executors.newFixedThreadPool(100);
 
     /**
      * 获取本地视频封面
@@ -29,22 +35,22 @@ public class CaptureUtil {
      */
     public static boolean getCover(String videoPath, CaptureRequest request) throws Exception {
         List<File> videos = getAllVideos(FileUtils.getFile(videoPath));
-        ExecutorService threadPool = Executors.newFixedThreadPool(100);
-        videos.forEach(v -> {
-            try {
-                request.setFilePath(v.getAbsolutePath());
-                String filePath = v.getAbsolutePath();
-                request.setFileName(filePath.substring(filePath.lastIndexOf(File.separator) + 1, filePath.lastIndexOf(".")));
-                threadPool.submit(new Capture(FFmpegFrameGrabber.createDefault(new File(videoPath)), request));
-            } catch (FrameGrabber.Exception e) {
 
-            }
+        System.out.println(">>>>>>>>>>>>>>list files>>>>>>>>>>>>>>");
+        videos.stream().forEach(e -> {
+            System.out.println(e.getAbsolutePath());
         });
 
-        threadPool.shutdown();
-        while (!threadPool.isTerminated()) {
+        CountDownLatch countDownLatch = new CountDownLatch(videos.size());
 
-        }
+        videos.forEach(v -> {
+            request.setFilePath(v.getAbsolutePath());
+            String filePath = v.getAbsolutePath();
+            request.setFileName(filePath.substring(filePath.lastIndexOf(File.separator) + 1, filePath.lastIndexOf(".")));
+            threadPool.submit(new Capture(request, countDownLatch));
+        });
+
+        countDownLatch.await();
 
         return true;
     }
@@ -101,54 +107,80 @@ public class CaptureUtil {
     static class Capture implements Runnable {
         private FFmpegFrameGrabber fFmpegFrameGrabber;
         private CaptureRequest captureRequest;
+        private CountDownLatch countDownLatch;
 
-        public Capture(FFmpegFrameGrabber aDefault, CaptureRequest request) {
-            this.fFmpegFrameGrabber = aDefault;
-            this.captureRequest = request;
+        public Capture(CaptureRequest request, CountDownLatch countDownLatch) {
+            try {
+                this.fFmpegFrameGrabber = FFmpegFrameGrabber.createDefault(new File(request.getFilePath()));
+
+                this.captureRequest = request;
+            } catch (FrameGrabber.Exception e) {
+                e.printStackTrace();
+            }
         }
 
         @Override
         public void run() {
+            System.out.println(">>>>>>>>>>>>>>" + captureRequest.getFilePath() + ">>>>>>>>>>>>>> start..." + Thread.currentThread().getName());
+
             try {
                 fFmpegFrameGrabber.start();
 
                 int length = fFmpegFrameGrabber.getLengthInFrames();
 
-                //截图的点
-                Set<Integer> capturePoints = new HashSet<>();
+
+                // 视频截取
+                List<Frame> frames = new ArrayList();
 
                 if (captureRequest.isTimeRandom()) {
                     //截图的数量
                     int count = Integer.parseInt(captureRequest.getCount());
-                    if (count > 1) {
-                        int gap = fFmpegFrameGrabber.getLengthInFrames() / count;
-                        for (int i = 0; i < count; i++) {
-                            int point = i * gap + new Random().nextInt(gap);
-                            if (point > length) {
-                                point = length;
-                            }
-                            capturePoints.add(point);
+                    //截图的点
+                    List<Integer> capturePoints = new ArrayList<>(count);
+
+                    int gap = fFmpegFrameGrabber.getLengthInFrames() / count;
+                    for (int i = 0; i < count; i++) {
+                        int point = i * gap + new Random().nextInt(gap);
+                        if (point > length) {
+                            point = length;
                         }
-                    } else {
-                        capturePoints.add(new Random().nextInt(length));
+                        capturePoints.add(point);
+                    }
+
+                    System.out.println(">>>>>>>>>>>>>>" + captureRequest.getFilePath() + ">>>>>>>>>>>>>> capture frames..." + Thread.currentThread().getName());
+                    capturePoints.stream().forEach(e -> System.out.print(e + " "));
+                    System.out.println("");
+
+                    for (int i = 0; i < capturePoints.size(); i++) {
+                        fFmpegFrameGrabber.setVideoFrameNumber(capturePoints.get(i));
+                        /*
+                        Each call to grab stores the new image in the memory address for the previously returned frame.
+                        grabber.grab() == grabber.grab()
+                        This means that if you need to cache images returned from grab you should Frame.clone() the returned frame as the next call to grab will overwrite your existing image's memory.
+                        Why?
+                        Using this method instead of allocating a new buffer every time a frame is grabbed improves performance by reducing the frequency of garbage collections. Almost no additional heap space is typically allocated per frame.
+                        */
+                        frames.add(fFmpegFrameGrabber.grabImage().clone());
+
                     }
 
                 } else {
                     // 此视频时长（s/秒）：
                     long duration = fFmpegFrameGrabber.getLengthInTime() / (1000 * 1000);
+                    String time = captureRequest.getCaptureTime();
+                    String[] timemarks = StringUtils.split(time, ":");
+                    long timestamp = (Long.parseLong(timemarks[0]) * 3600 + Long.parseLong(timemarks[1]) * 60 + Long.parseLong(timemarks[2])) * 1000000l;
+
+                    System.out.println(">>>>>>>>>>>>>>" + captureRequest.getFilePath() + ">>>>>>>>>>>>>> capture time..." + Thread.currentThread().getName());
+                    System.out.println(">>>>>>>>>>>>>>" + time + ">>>>>>>>>>>>>> timestamp>>>>>" + timestamp + ">>>>" + Thread.currentThread().getName());
+
+                    fFmpegFrameGrabber.setTimestamp(timestamp);
+                    frames.add(fFmpegFrameGrabber.grabImage().clone());
                 }
 
-                // 视频的视频
-                List<Frame> frames = new ArrayList<>(capturePoints.size());
-                int i = 0;
-                while (i++ < length && capturePoints.size() > 0) {
-                    Frame frame = fFmpegFrameGrabber.grabImage();
-                    if (capturePoints.contains(i)) {
-                        frames.add(frame);
-                        capturePoints.remove(i);
-                    }
-                }
 
+                /*System.out.println(">>>>>>>>>>>>>>" + captureRequest.getFilePath() + ">>>>>>>>>>>>>> capture frames>>>>>" + Thread.currentThread().getName());
+                frames.stream().forEach(e -> System.out.println(e));*/
                 writeImage(frames);
 
             } catch (Exception e) {
@@ -159,6 +191,8 @@ public class CaptureUtil {
                 } catch (FrameGrabber.Exception e) {
                     e.printStackTrace();
                 }
+
+                countDownLatch.countDown();
             }
         }
 
@@ -177,8 +211,14 @@ public class CaptureUtil {
                         bufferedImage = thumbnailImage;
                     }
 
+                    File file1 = new File(captureRequest.getSavePath() + File.separator + captureRequest.getFileName() + File.separator);
+                    if (!file1.exists()) {
+                        FileUtils.forceMkdir(file1);
+                    }
                     File file = new File(captureRequest.getSavePath() + File.separator + captureRequest.getFileName() + File.separator + System.currentTimeMillis() + ".png");
                     ImageIO.write(bufferedImage, "png", file);
+
+                    System.out.println(">>>>>>>>>>>>>>" + file.getAbsolutePath() + ">>>>>>>>>>>>>> capture finished..." + Thread.currentThread().getName());
                 }
 
             } catch (Exception e) {
